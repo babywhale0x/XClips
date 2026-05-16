@@ -27,7 +27,14 @@ export default function AnalyticsDashboard() {
         setLoading(false);
       }
     }
+
+    // Initial fetch
     fetchStats();
+
+    // Poll every 5 seconds for real-time updates
+    const interval = setInterval(fetchStats, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) return (
@@ -45,9 +52,17 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2 text-black">Analytics Overview</h1>
-        <p className="text-gray-500">Track your site growth and ad performance.</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 text-black flex items-center gap-3">
+            Analytics Overview
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100 animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+              Live
+            </span>
+          </h1>
+          <p className="text-gray-500">Track your site growth and ad performance in real-time.</p>
+        </div>
       </div>
 
       {/* Stats Grid */}
