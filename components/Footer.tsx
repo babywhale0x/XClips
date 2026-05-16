@@ -17,20 +17,30 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-gray-900 mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-500">
-              <li><a href="#" className="hover:text-black transition-colors">Home</a></li>
-              <li><a href="#" className="hover:text-black transition-colors">How it works</a></li>
-              <li><a href="#" className="hover:text-black transition-colors">Safety & Privacy</a></li>
-              <li><a href="#" className="hover:text-black transition-colors">Terms of Service</a></li>
+              <li><a href="/" className="hover:text-black transition-colors">Home</a></li>
+              <li><a href="/how-it-works" className="hover:text-black transition-colors">How it works</a></li>
+              <li><a href="/safety-privacy" className="hover:text-black transition-colors">Safety & Privacy</a></li>
+              <li><a href="/terms" className="hover:text-black transition-colors">Terms of Service</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold text-gray-900 mb-4">Connect</h4>
             <div className="flex items-center gap-4">
-              <a href="#" className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors">
+              <a 
+                href="https://x.com/0xbabywhale5" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors"
+              >
                 <X className="w-5 h-5 text-gray-600 fill-current" />
               </a>
-              <a href="#" className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors">
+              <a 
+                href="https://github.com/babywhale0x/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors"
+              >
                 <Code className="w-5 h-5 text-gray-600" />
               </a>
             </div>
