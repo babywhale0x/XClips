@@ -74,6 +74,11 @@ export async function downloadVideo(url: string): Promise<VideoInfo> {
       errorOutput += data.toString();
     });
 
+    child.on('error', (error) => {
+      console.error('Spawn error:', error);
+      reject(new Error(`System error: Could not start downloader. Ensure yt-dlp is installed. (${error.message})`));
+    });
+
     child.on('close', (code) => {
       if (code !== 0) {
         console.error(`yt-dlp error: ${errorOutput}`);
