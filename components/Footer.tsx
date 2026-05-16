@@ -1,4 +1,4 @@
-import { X, Code, Heart } from 'lucide-react';
+import { X, Github, Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -41,7 +41,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors"
               >
-                <Code className="w-5 h-5 text-gray-600" />
+                <Github className="w-5 h-5 text-gray-600" />
               </a>
             </div>
           </div>

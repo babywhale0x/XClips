@@ -36,7 +36,7 @@ export default function AdBanner() {
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % ads.length);
-    }, 2000); // 2 second slideshow
+    }, 4000); // 4 second slideshow
 
     return () => clearInterval(interval);
   }, [ads]);

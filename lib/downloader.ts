@@ -97,10 +97,10 @@ export async function downloadVideo(url: string): Promise<VideoInfo> {
       });
     });
 
-    // Timeout after 60 seconds
+    // Timeout after 120 seconds
     setTimeout(() => {
       child.kill();
-      reject(new Error('Download timed out'));
-    }, 60000);
+      reject(new Error('Download timed out after 120 seconds. This might be due to a blocked connection or rate limits.'));
+    }, 120000);
   });
 }
