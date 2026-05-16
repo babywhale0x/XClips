@@ -31,6 +31,17 @@ export async function downloadVideo(url: string): Promise<VideoInfo> {
     // yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" 
     // -o "temp/%(id)s.%(ext)s" --print filename <URL>
     
+    // Cookie Handling
+    const cookiesPath = path.join(TEMP_DIR, 'cookies.txt');
+    if (process.env.TWITTER_COOKIES_B64) {
+      try {
+        const decodedCookies = Buffer.from(process.env.TWITTER_COOKIES_B64, 'base64').toString('utf-8');
+        fs.writeFileSync(cookiesPath, decodedCookies);
+      } catch (err) {
+        console.error('Failed to write cookies file:', err);
+      }
+    }
+
     const localFfmpeg = 'C:\\Users\\ikuda\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1.1-full_build\\bin\\ffmpeg.exe';
     
     const args = [
@@ -41,6 +52,7 @@ export async function downloadVideo(url: string): Promise<VideoInfo> {
       '--add-header', 'Referer:https://x.com/',
       '--add-header', 'Origin:https://x.com/',
       ...(fs.existsSync(localFfmpeg) ? ['--ffmpeg-location', localFfmpeg] : []),
+      ...(fs.existsSync(cookiesPath) ? ['--cookies', cookiesPath] : []),
       '-o', path.join(TEMP_DIR, '%(id)s.%(ext)s'),
       '--print', 'id',
       '--print', 'title',
