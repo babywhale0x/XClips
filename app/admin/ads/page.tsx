@@ -86,8 +86,17 @@ export default function ManageAds() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this ad?')) return;
-    const res = await fetch(`/api/admin/ads?id=${id}`, { method: 'DELETE' });
-    if (res.ok) fetchAds();
+    try {
+      const res = await fetch(`/api/admin/ads?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchAds();
+      } else {
+        const data = await res.json();
+        alert(`Failed to delete ad: ${data.error || 'Unknown error'}`);
+      }
+    } catch (err: any) {
+      alert(`Network error deleting ad: ${err.message || err}`);
+    }
   };
 
   const cancelEdit = () => {

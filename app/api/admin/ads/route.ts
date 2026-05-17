@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient, APPWRITE_DB_ID, ADS_COLLECTION_ID } from '@/lib/appwrite';
 import { ID, Query } from 'node-appwrite';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const { databases } = createAdminClient();
   
