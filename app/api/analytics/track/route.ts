@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       ID.unique(),
       { 
         event_type, 
-        country, 
+        country255: country, 
         metadata: metadata ? JSON.stringify(metadata) : '{}' 
       }
     );

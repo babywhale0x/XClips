@@ -18,7 +18,7 @@ export async function GET() {
 
     const countryCounts: Record<string, number> = {};
     allVisits.documents.forEach(doc => {
-      const country = doc.country || 'Unknown';
+      const country = doc.country255 || 'Unknown';
       countryCounts[country] = (countryCounts[country] || 0) + 1;
     });
 
