@@ -1,4 +1,3 @@
-import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 
@@ -18,106 +17,73 @@ if (!fs.existsSync(TEMP_DIR)) {
 }
 
 export async function downloadVideo(url: string): Promise<VideoInfo> {
-  return new Promise((resolve, reject) => {
-    // Basic URL validation
-    const twitterRegex = /^(https?:\/\/)?(www\.)?(twitter\.com|x\.com)\/[a-zA-Z0-9_]+\/status\/[0-9]+(\?.*)?$/;
-    if (!twitterRegex.test(url)) {
-      return reject(new Error('Invalid X/Twitter URL'));
+  // Basic URL validation
+  const twitterRegex = /^(https?:\/\/)?(www\.)?(twitter\.com|x\.com)\/[a-zA-Z0-9_]+\/status\/[0-9]+(\?.*)?$/;
+  if (!twitterRegex.test(url)) {
+    throw new Error('Invalid X/Twitter URL');
+  }
+
+  // Extract Tweet ID
+  const match = url.match(/\/status\/(\d+)/);
+  if (!match) {
+    throw new Error('Failed to extract Tweet ID from URL');
+  }
+  const tweetId = match[1];
+
+  const apiKey = process.env.RAPID_API_KEY || 'e4bc1e2e31mshc4ceaa07642b5a9p1ab2dejsn34db64ff6b54';
+
+  try {
+    // 1. Fetch tweet details from RapidAPI
+    const apiRes = await fetch(`https://twitter154.p.rapidapi.com/tweet/details?tweet_id=${tweetId}`, {
+      headers: {
+        'x-rapidapi-host': 'twitter154.p.rapidapi.com',
+        'x-rapidapi-key': apiKey,
+      },
+    });
+
+    if (!apiRes.ok) {
+      throw new Error(`RapidAPI responded with status: ${apiRes.status}`);
     }
 
-    // Sanitize URL by removing query params to be safe, though spawn is relatively safe
-    const sanitizedUrl = url.split('?')[0];
-
-    // yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" 
-    // -o "temp/%(id)s.%(ext)s" --print filename <URL>
-    
-    // Cookie Handling
-    const cookiesPath = path.join(TEMP_DIR, 'cookies.txt');
-    if (process.env.TWITTER_COOKIES_B64) {
-      try {
-        const decodedCookies = Buffer.from(process.env.TWITTER_COOKIES_B64, 'base64').toString('utf-8');
-        fs.writeFileSync(cookiesPath, decodedCookies);
-      } catch (err) {
-        console.error('Failed to write cookies file:', err);
-      }
+    const data = await apiRes.json();
+    if (!data || data.detail) {
+      throw new Error(data.detail || 'Tweet not found or private');
     }
 
-    const localFfmpeg = 'C:\\Users\\ikuda\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1.1-full_build\\bin\\ffmpeg.exe';
-    
-    const args = [
-      '-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-      '--no-playlist',
-      '--max-filesize', '100M',
-      '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-      '--add-header', 'Referer:https://x.com/',
-      '--add-header', 'Origin:https://x.com/',
-      ...(fs.existsSync(localFfmpeg) ? ['--ffmpeg-location', localFfmpeg] : []),
-      ...(fs.existsSync(cookiesPath) ? ['--cookies', cookiesPath] : []),
-      '-o', path.join(TEMP_DIR, '%(id)s.%(ext)s'),
-      '--print', 'id',
-      '--print', 'title',
-      '--print', 'filename',
-      '--no-simulate',
-      sanitizedUrl
-    ];
+    // 2. Extract highest quality MP4 video URL
+    if (!data.video_url || !Array.isArray(data.video_url)) {
+      throw new Error('No video found in this tweet');
+    }
 
-    const child = spawn('yt-dlp', args);
+    const mp4Videos = data.video_url
+      .filter((v: any) => v.content_type === 'video/mp4' && v.url)
+      .sort((a: any, b: any) => (b.bitrate || 0) - (a.bitrate || 0));
 
-    let output = '';
-    let errorOutput = '';
+    if (mp4Videos.length === 0) {
+      throw new Error('No MP4 video found in this tweet');
+    }
 
-    child.stdout.on('data', (data) => {
-      output += data.toString();
-    });
+    const videoUrl = mp4Videos[0].url;
 
-    child.stderr.on('data', (data) => {
-      errorOutput += data.toString();
-    });
+    // 3. Download the video file to the temp directory
+    const videoRes = await fetch(videoUrl);
+    if (!videoRes.ok) {
+      throw new Error(`Failed to fetch video file from Twitter: ${videoRes.status}`);
+    }
 
-    child.on('error', (error) => {
-      console.error('Spawn error:', error);
-      reject(new Error(`System error: Could not start downloader. Ensure yt-dlp is installed. (${error.message})`));
-    });
+    const buffer = Buffer.from(await videoRes.arrayBuffer());
+    const filename = `${tweetId}.mp4`;
+    fs.writeFileSync(path.join(TEMP_DIR, filename), buffer);
 
-    child.on('close', (code) => {
-      if (code !== 0) {
-        console.error(`yt-dlp error: ${errorOutput}`);
-        return reject(new Error('Failed to extract video. Make sure the tweet contains a video and is public.'));
-      }
+    const title = data.text ? data.text.split('http')[0].trim() : 'Twitter Video';
 
-      const lines = output.trim().replace(/\r/g, '').split('\n');
-      if (lines.length < 3) {
-        return reject(new Error('Failed to parse yt-dlp output'));
-      }
-
-      const id = lines[0].trim();
-      const title = lines[1].trim();
-
-      // Find any file in TEMP_DIR that starts with the ID
-      const files = fs.readdirSync(TEMP_DIR);
-      const matchedFile = files.find(f => f.startsWith(id));
-
-      if (!matchedFile) {
-        console.error(`Extraction succeeded for ID ${id}, but no file starting with this ID was found in ${TEMP_DIR}. Found files: ${files.join(', ')}`);
-        return reject(new Error('Extraction succeeded but file was not saved. This usually happens if the video format is not supported or requires FFmpeg.'));
-      }
-
-      const filename = matchedFile;
-      const fullPath = path.join(TEMP_DIR, filename);
-
-      console.log(`Successfully found extracted file: ${fullPath}`);
-
-      resolve({
-        id,
-        title,
-        filename
-      });
-    });
-
-    // Timeout after 120 seconds
-    setTimeout(() => {
-      child.kill();
-      reject(new Error('Download timed out after 120 seconds. This might be due to a blocked connection or rate limits.'));
-    }, 120000);
-  });
+    return {
+      id: tweetId,
+      title: title || 'Twitter Video',
+      filename,
+    };
+  } catch (error: any) {
+    console.error('Download error:', error);
+    throw new Error(`Download failed: ${error.message || error}`);
+  }
 }
