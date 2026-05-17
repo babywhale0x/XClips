@@ -25,7 +25,7 @@ export default function ManageAds() {
   }, []);
 
   const fetchAds = async () => {
-    const res = await fetch('/api/admin/ads');
+    const res = await fetch('/api/admin/banners');
     const data = await res.json();
     if (Array.isArray(data)) setAds(data);
     setLoading(false);
@@ -64,7 +64,7 @@ export default function ManageAds() {
       ? { id: editAd.$id, ...formData }
       : formData;
 
-    const res = await fetch('/api/admin/ads', {
+    const res = await fetch('/api/admin/banners', {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -87,7 +87,7 @@ export default function ManageAds() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this ad?')) return;
     try {
-      const res = await fetch(`/api/admin/ads?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/banners?id=${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchAds();
       } else {

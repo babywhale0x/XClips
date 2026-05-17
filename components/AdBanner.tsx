@@ -17,7 +17,7 @@ export default function AdBanner() {
   useEffect(() => {
     async function fetchAds() {
       try {
-        const res = await fetch('/api/ads');
+        const res = await fetch('/api/banners');
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
           setAds(data);
