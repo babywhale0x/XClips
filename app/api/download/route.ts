@@ -3,12 +3,14 @@ import { downloadVideo } from '@/lib/downloader';
 import { checkRateLimit } from '@/lib/rate-limit';
 import '@/lib/cleanup'; // Import to ensure cleanup worker starts
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const { url } = await req.json();
 
-    if (!url) {
-      return NextResponse.json({ error: 'URL is required' }, { status: 400 });
+    if (!url || typeof url !== 'string') {
+      return NextResponse.json({ error: 'Valid URL is required' }, { status: 400 });
     }
 
     // Rate limiting
@@ -18,14 +20,22 @@ export async function POST(req: NextRequest) {
     }
 
     const videoInfo = await downloadVideo(url);
+    if (!videoInfo) {
+      console.error('downloadVideo returned undefined');
+      return NextResponse.json({ error: 'Failed to retrieve video info' }, { status: 500 });
+    }
 
     return NextResponse.json({
       success: true,
       ...videoInfo,
-      downloadUrl: `/api/files/${videoInfo.filename}`
+      downloadUrl: `/api/files/${videoInfo.filename}`,
     });
   } catch (error: any) {
     console.error('API Error:', error);
-    return NextResponse.json({ error: error.message || 'Something went wrong' }, { status: 500 });
+    const message = error?.message || 'Something went wrong';
+    if (message.includes('RapidAPI service unavailable')) {
+      return NextResponse.json({ error: message }, { status: 502 });
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
