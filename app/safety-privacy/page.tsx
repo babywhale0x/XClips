@@ -21,9 +21,9 @@ export default function SafetyPrivacy() {
                 <EyeOff className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2 text-black">No Tracking</h3>
+                <h3 className="text-xl font-bold mb-2 text-black">Anonymous Analytics</h3>
                 <p className="text-gray-500 leading-relaxed">
-                  We do not use tracking cookies to identify you. We only collect anonymous visit statistics to improve our service performance.
+                  We collect anonymous visit statistics to improve our service. Our third-party advertising partners may use cookies to deliver relevant ads to keep the service free.
                 </p>
               </div>
             </div>
@@ -47,7 +47,7 @@ export default function SafetyPrivacy() {
               <div>
                 <h3 className="text-xl font-bold mb-2 text-black">Safe Downloads</h3>
                 <p className="text-gray-500 leading-relaxed">
-                  All downloads are processed through secure server-side extraction. We never link to malicious external sites or pop-up ads.
+                  All downloads are processed through secure server-side extraction. We use third-party ad networks to support the site, but your downloads are completely safe and handled securely by our servers.
                 </p>
               </div>
             </div>
