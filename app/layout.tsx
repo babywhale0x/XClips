@@ -41,6 +41,7 @@ export default function RootLayout({
           data-domain="xclips.app"
           strategy="afterInteractive"
         />
+        <script src="https://pl29636561.effectivecpmnetwork.com/61/48/ef/6148efde6aa5c70100cd3c535d65fbb0.js"></script>
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
