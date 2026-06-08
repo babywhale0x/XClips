@@ -36,11 +36,9 @@ export default function RootLayout({
             strategy="afterInteractive"
           />
         )}
-        <Script 
-          src="https://analytics.vgdh.io/js/script.js"
-          data-domain="xclips.app"
-          strategy="afterInteractive"
-        />
+        <script defer data-domain="your-domain.com" src="https://analytics.vgdh.io/js/script.js"></script>
+        <script defer data-domain="your-domain.com" src="https://analytics.vgdh.io/js/script.js"></script>
+        <script defer data-domain="your-domain.com" src="https://analytics.vgdh.io/js/script.js"></script>
         <script src="https://pl29636561.effectivecpmnetwork.com/61/48/ef/6148efde6aa5c70100cd3c535d65fbb0.js"></script>
       </head>
       <body className="min-h-full flex flex-col">
