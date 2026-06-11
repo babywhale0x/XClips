@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Download, Link as LinkIcon, Loader2, AlertCircle, CheckCircle2, ArrowRight, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import AdBanner from '@/components/AdBanner';
 
 export default function Home() {
   const [url, setUrl] = useState('');
@@ -85,9 +84,6 @@ export default function Home() {
             High-quality MP4 downloads. No login required. 100% free and open source.
           </p>
         </section>
-
-        {/* Ad Banner */}
-        <AdBanner />
 
         {/* Input Section */}
         <section className="max-w-3xl mx-auto mb-16">
@@ -191,23 +187,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Advertisements */}
-        <div className="flex flex-col items-center gap-8 mb-12">
-          <a href="https://www.effectivecpmnetwork.com/pcrs5ccn?key=fc25e99f461208a6c6d81c5238edec73" target="_blank" rel="noopener noreferrer" className="opacity-0 w-0 h-0 absolute overflow-hidden">Visit our Sponsor</a>
-          
-          <script async data-cfasync="false" src="https://pl29636612.effectivecpmnetwork.com/7519d9910342ab72722fb9e706ee4f18/invoke.js"></script>
-          <div id="container-7519d9910342ab72722fb9e706ee4f18"></div>
-
-          <script dangerouslySetInnerHTML={{ __html: `
-            atOptions = {
-              'key' : '74c828fd12add3dcc515b4ccc375adab',
-              'format' : 'iframe',
-              'height' : 60,
-              'width' : 468,
-              'params' : {}
-            };
-          `}} />
-        </div>
       </main>
 
       <Footer />

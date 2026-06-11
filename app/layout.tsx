@@ -36,14 +36,9 @@ export default function RootLayout({
             strategy="afterInteractive"
           />
         )}
-        <script defer data-domain="your-domain.com" src="https://analytics.vgdh.io/js/script.js"></script>
-        <script defer data-domain="your-domain.com" src="https://analytics.vgdh.io/js/script.js"></script>
-        <script defer data-domain="your-domain.com" src="https://analytics.vgdh.io/js/script.js"></script>
-        <script src="https://pl29636561.effectivecpmnetwork.com/61/48/ef/6148efde6aa5c70100cd3c535d65fbb0.js"></script>
       </head>
       <body className="min-h-full flex flex-col">
         {children}
-        <script src="https://pl29636611.effectivecpmnetwork.com/2f/e6/ed/2fe6ed034a49b30dddf4803c5b42877a.js"></script>
       </body>
     </html>
   );
