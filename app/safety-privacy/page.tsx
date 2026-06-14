@@ -4,12 +4,12 @@ import { ShieldCheck, EyeOff, Lock } from 'lucide-react';
 
 export default function SafetyPrivacy() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-gray-900">
+    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-gray-900 selection:bg-fuchsia-100 selection:text-fuchsia-900">
       <Header />
       <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-black mb-6 text-black">Safety & <span className="text-blue-500">Privacy</span></h1>
+            <h1 className="text-4xl font-black mb-6 text-black">Safety & <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-fuchsia-500">Privacy</span></h1>
             <p className="text-lg text-gray-500 leading-relaxed">
               Your privacy is our top priority. Here's how we protect you.
             </p>
@@ -17,19 +17,19 @@ export default function SafetyPrivacy() {
 
           <div className="space-y-12">
             <div className="flex gap-6">
-              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 flex-shrink-0">
+              <div className="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center text-cyan-500 flex-shrink-0">
                 <EyeOff className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="text-xl font-bold mb-2 text-black">Anonymous Analytics</h3>
                 <p className="text-gray-500 leading-relaxed">
-                  We collect anonymous visit statistics to improve our service. Our third-party advertising partners may use cookies to deliver relevant ads to keep the service free.
+                  We collect anonymous visit statistics to improve our service. We do not use intrusive third-party trackers or ad networks that harvest your data.
                 </p>
               </div>
             </div>
 
             <div className="flex gap-6">
-              <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-500 flex-shrink-0">
+              <div className="w-12 h-12 bg-fuchsia-50 rounded-xl flex items-center justify-center text-fuchsia-500 flex-shrink-0">
                 <Lock className="w-6 h-6" />
               </div>
               <div>
@@ -41,13 +41,13 @@ export default function SafetyPrivacy() {
             </div>
 
             <div className="flex gap-6">
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-500 flex-shrink-0">
+              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-500 flex-shrink-0">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="text-xl font-bold mb-2 text-black">Safe Downloads</h3>
                 <p className="text-gray-500 leading-relaxed">
-                  All downloads are processed through secure server-side extraction. We use third-party ad networks to support the site, but your downloads are completely safe and handled securely by our servers.
+                  All downloads are processed through secure server-side extraction. Your downloads are completely safe and handled securely by our servers.
                 </p>
               </div>
             </div>

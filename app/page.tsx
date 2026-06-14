@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Download, Link as LinkIcon, Loader2, AlertCircle, CheckCircle2, ArrowRight, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AdBanner from '@/components/AdBanner';
 
 export default function Home() {
   const [url, setUrl] = useState('');
@@ -85,8 +86,11 @@ export default function Home() {
           </p>
         </section>
 
+        {/* Self-Hosted Ad Banner */}
+        <AdBanner />
+
         {/* Input Section */}
-        <section className="max-w-3xl mx-auto mb-16">
+        <section className="max-w-3xl mx-auto mb-8">
           <div className="bg-white p-2 md:p-3 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 mb-8 transform transition-all hover:shadow-2xl hover:shadow-fuchsia-100">
             <form onSubmit={handleDownload} className="flex flex-col md:flex-row gap-2">
               <div className="relative flex-grow group">

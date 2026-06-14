@@ -2,18 +2,7 @@ import { X } from 'lucide-react';
 import Link from 'next/link';
 
 const VerseLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
-  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="verseGrad" x1="0" y1="0" x2="100" y2="100">
-        <stop offset="0%" stopColor="#00E5FF" />
-        <stop offset="50%" stopColor="#5E5CFF" />
-        <stop offset="100%" stopColor="#D500F9" />
-      </linearGradient>
-    </defs>
-    <circle cx="50" cy="50" r="50" fill="url(#verseGrad)" />
-    <line x1="68" y1="32" x2="50" y2="68" stroke="white" strokeOpacity="0.6" strokeWidth="18" strokeLinecap="round" />
-    <line x1="32" y1="32" x2="50" y2="68" stroke="white" strokeWidth="18" strokeLinecap="round" />
-  </svg>
+  <img src="/verse-logo.png" alt="Verse Logo" className={`object-contain ${className}`} />
 );
 
 export default function Header() {
