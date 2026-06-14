@@ -78,6 +78,85 @@ async function fetchWithV24(url: string, apiKey: string): Promise<{ videoUrl: st
 }
 
 /**
+ * API strategies for different RapidAPI video downloaders.
+ */
+type ApiStrategy = {
+  name: string;
+  supports: (url: string) => boolean;
+  execute: (url: string, apiKey: string) => Promise<{ videoUrl: string, title: string, id: string }>;
+};
+
+const strategies: ApiStrategy[] = [
+  {
+    name: 'all-in-one-lite',
+    supports: () => true, // generic downloader
+    execute: async (url, apiKey) => {
+       const res = await fetch(`https://download-all-in-one-lite.p.rapidapi.com/autolink?url=${encodeURIComponent(url)}`, {
+          headers: { 'x-rapidapi-host': 'download-all-in-one-lite.p.rapidapi.com', 'x-rapidapi-key': apiKey }
+       });
+       if (!res.ok) throw new Error(`Status: ${res.status}`);
+       const data = await res.json();
+       if (data.error) throw new Error('API returned error: ' + data.error);
+       
+       const medias = data.medias || [];
+       const video = medias.find((m: any) => m.type === 'video' && m.quality === 'hd_no_watermark') 
+                  || medias.find((m: any) => m.type === 'video');
+       if (!video || !video.url) throw new Error('No video found in response');
+       return { videoUrl: video.url, title: data.title || 'Video', id: data.id || Date.now().toString() };
+    }
+  },
+  {
+    name: 'all-in-one-ultimate',
+    supports: () => true, // generic downloader
+    execute: async (url, apiKey) => {
+       const res = await fetch(`https://download-all-in-one-ultimate.p.rapidapi.com/autolink?url=${encodeURIComponent(url)}`, {
+          headers: { 'x-rapidapi-host': 'download-all-in-one-ultimate.p.rapidapi.com', 'x-rapidapi-key': apiKey }
+       });
+       if (!res.ok) throw new Error(`Status: ${res.status}`);
+       const data = await res.json();
+       if (data.error) throw new Error('API returned error: ' + data.error);
+       
+       const medias = data.medias || [];
+       const video = medias.find((m: any) => m.type === 'video' && m.quality === 'hd_no_watermark') 
+                  || medias.find((m: any) => m.type === 'video');
+       if (!video || !video.url) throw new Error('No video found in response');
+       return { videoUrl: video.url, title: data.title || 'Video', id: data.id || Date.now().toString() };
+    }
+  },
+  {
+    name: 'twitter-x-video-downloader1',
+    supports: (url) => /(?:x\.com|twitter\.com)/i.test(url),
+    execute: async (url, apiKey) => {
+      const res = await fetch(`https://twitter-x-video-downloader1.p.rapidapi.com/api/download/twitter?url=${encodeURIComponent(url)}`, {
+        headers: { 'x-rapidapi-host': 'twitter-x-video-downloader1.p.rapidapi.com', 'x-rapidapi-key': apiKey }
+      });
+      if (!res.ok) throw new Error(`Status: ${res.status}`);
+      const data = await res.json();
+      if (data.status !== 'success' || !data.result) throw new Error('Unsuccessful status');
+      
+      const mediaArr = data.result.media || [];
+      let videoUrl = '';
+      for (const m of mediaArr) {
+        if (m.type === 'video' && m.videos && m.videos.length > 0) {
+          const sortedVideos = [...m.videos].sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0));
+          videoUrl = sortedVideos[0].url;
+          break;
+        }
+      }
+      if (!videoUrl) throw new Error('No video found in response');
+      return { videoUrl, title: data.result.description || 'Video', id: data.result.id || Date.now().toString() };
+    }
+  },
+  {
+    name: 'twitter-v24',
+    supports: (url) => /(?:x\.com|twitter\.com)/i.test(url),
+    execute: async (url, apiKey) => {
+      return await fetchWithV24(url, apiKey);
+    }
+  }
+];
+
+/**
  * Downloads a video using RapidAPI endpoints with automatic fallback and key rotation.
  */
 export async function downloadVideo(url: string): Promise<VideoInfo> {
@@ -88,74 +167,33 @@ export async function downloadVideo(url: string): Promise<VideoInfo> {
   const keysStr = process.env.RAPID_API_KEYS || process.env.RAPID_API_KEY || 'e4bc1e2e31mshc4ceaa07642b5a9p1ab2dejsn34db64ff6b54';
   const apiKeys = keysStr.split(',').map(k => k.trim()).filter(k => k.length > 0);
 
-  const primaryApiUrl = `https://twitter-x-video-downloader1.p.rapidapi.com/api/download/twitter?url=${encodeURIComponent(url)}`;
-
   let lastError: Error | null = null;
   let videoUrl = '';
   let id = '';
   let title = 'Video';
 
-  for (const apiKey of apiKeys) {
-    let keySuccess = false;
+  const applicableStrategies = strategies.filter(s => s.supports(url));
+  let success = false;
 
-    // --- TRY PRIMARY API ---
-    try {
-      const apiRes = await fetch(primaryApiUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-rapidapi-host': 'twitter-x-video-downloader1.p.rapidapi.com',
-          'x-rapidapi-key': apiKey,
-        },
-      });
-
-      if (apiRes.ok) {
-        const data = await apiRes.json();
-        if (data.status === 'success' && data.result) {
-          const mediaArr = data.result.media || [];
-          for (const m of mediaArr) {
-            if (m.type === 'video' && m.videos && m.videos.length > 0) {
-              const sortedVideos = [...m.videos].sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0));
-              videoUrl = sortedVideos[0].url;
-              break;
-            }
-          }
-          if (videoUrl) {
-            id = data.result.id || Date.now().toString();
-            title = data.result.description || 'Video';
-            keySuccess = true;
-          }
-        }
-      } else {
-        const errText = await apiRes.text();
-        console.error(`Primary API failed on key ${apiKey.substring(0,5)}... Status: ${apiRes.status}. ${errText}`);
-      }
-    } catch (err: any) {
-       console.error(`Primary API network error: ${err.message}`);
-    }
-
-    // --- FALLBACK TO SECONDARY API (twitter-v24) if primary failed ---
-    if (!keySuccess) {
+  for (const strategy of applicableStrategies) {
+    if (success) break;
+    for (const apiKey of apiKeys) {
       try {
-        console.log(`Attempting twitter-v24 fallback for key ${apiKey.substring(0,5)}...`);
-        const fallback = await fetchWithV24(url, apiKey);
-        videoUrl = fallback.videoUrl;
-        id = fallback.id;
-        title = fallback.title;
-        keySuccess = true;
-      } catch (fallbackErr: any) {
-        console.error(`v24 fallback failed: ${fallbackErr.message}`);
-        lastError = new Error(`Both APIs failed on this key. Fallback error: ${fallbackErr.message}`);
+        console.log(`Attempting ${strategy.name} with key ${apiKey.substring(0,5)}...`);
+        const result = await strategy.execute(url, apiKey);
+        videoUrl = result.videoUrl;
+        title = result.title;
+        id = result.id;
+        success = true;
+        break; // break out of key loop on success
+      } catch (err: any) {
+         console.error(`${strategy.name} failed on key ${apiKey.substring(0,5)}: ${err.message}`);
+         lastError = err;
       }
-    }
-
-    // If either primary or fallback succeeded for this key, break out of key rotation!
-    if (keySuccess) {
-      break;
     }
   }
 
-  if (!videoUrl) {
+  if (!success || !videoUrl) {
     throw lastError || new Error('Failed to obtain a response from any API using any of the provided keys.');
   }
 
@@ -176,3 +214,4 @@ export async function downloadVideo(url: string): Promise<VideoInfo> {
 
   return { id, title, filename };
 }
+

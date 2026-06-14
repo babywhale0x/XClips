@@ -70,7 +70,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-gray-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-gray-900 font-sans selection:bg-fuchsia-100 selection:text-fuchsia-900">
       <Header />
 
       <main className="flex-grow pt-32 pb-16 px-4">
@@ -78,7 +78,7 @@ export default function Home() {
         <section className="max-w-4xl mx-auto text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent leading-tight">
             Save any video from X <br className="hidden md:block" />
-            <span className="text-blue-500 underline decoration-blue-200 decoration-8 underline-offset-4">in seconds.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500 underline decoration-fuchsia-200 decoration-8 underline-offset-4">in seconds.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
             High-quality MP4 downloads. No login required. 100% free and open source.
@@ -87,16 +87,16 @@ export default function Home() {
 
         {/* Input Section */}
         <section className="max-w-3xl mx-auto mb-16">
-          <div className="bg-white p-2 md:p-3 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 mb-8 transform transition-all hover:shadow-2xl hover:shadow-gray-200/60">
+          <div className="bg-white p-2 md:p-3 rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 mb-8 transform transition-all hover:shadow-2xl hover:shadow-fuchsia-100">
             <form onSubmit={handleDownload} className="flex flex-col md:flex-row gap-2">
               <div className="relative flex-grow group">
-                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-fuchsia-500 transition-colors">
                   <LinkIcon className="w-5 h-5" />
                 </div>
                 <input
                   type="text"
                   placeholder="Paste tweet URL here (e.g., https://x.com/user/status/...)"
-                  className="w-full pl-12 pr-4 py-4 md:py-5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all outline-none text-gray-800 placeholder:text-gray-400"
+                  className="w-full pl-12 pr-4 py-4 md:py-5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-fuchsia-500/20 focus:bg-white transition-all outline-none text-gray-800 placeholder:text-gray-400"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   disabled={loading}
@@ -105,7 +105,7 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={loading || !url}
-                className="bg-black text-white px-8 py-4 md:py-2 rounded-2xl font-bold hover:bg-gray-800 disabled:bg-gray-200 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 active:scale-95"
+                className="bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white px-8 py-4 md:py-2 rounded-2xl font-bold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 active:scale-95 shadow-lg shadow-fuchsia-200"
               >
                 {loading ? (
                   <>
@@ -138,7 +138,7 @@ export default function Home() {
                 <a
                   href={videoData.downloadUrl}
                   download={videoData.filename}
-                  className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-lg shadow-blue-200"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-fuchsia-200 active:scale-95"
                 >
                   <Download className="w-5 h-5" />
                   Save MP4
@@ -158,8 +158,8 @@ export default function Home() {
 
         {/* Features Section */}
         <section className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          <div className="p-6 rounded-2xl bg-white border border-gray-100 hover:border-blue-100 transition-colors group">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
+          <div className="p-6 rounded-2xl bg-white border border-gray-100 hover:border-cyan-200 transition-colors group shadow-sm hover:shadow-md">
+            <div className="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center text-cyan-500 mb-4 group-hover:scale-110 transition-transform">
               <ArrowRight className="w-6 h-6 rotate-45" />
             </div>
             <h4 className="font-bold text-gray-900 mb-2">Lightning Fast</h4>
@@ -167,8 +167,8 @@ export default function Home() {
               Optimized extraction engine that grabs the best quality in milliseconds.
             </p>
           </div>
-          <div className="p-6 rounded-2xl bg-white border border-gray-100 hover:border-blue-100 transition-colors group">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
+          <div className="p-6 rounded-2xl bg-white border border-gray-100 hover:border-fuchsia-200 transition-colors group shadow-sm hover:shadow-md">
+            <div className="w-12 h-12 bg-fuchsia-50 rounded-xl flex items-center justify-center text-fuchsia-500 mb-4 group-hover:scale-110 transition-transform">
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <h4 className="font-bold text-gray-900 mb-2">No Accounts</h4>
@@ -176,8 +176,8 @@ export default function Home() {
               Simply paste the link and download. We don't ask for any personal data.
             </p>
           </div>
-          <div className="p-6 rounded-2xl bg-white border border-gray-100 hover:border-blue-100 transition-colors group">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 mb-4 group-hover:scale-110 transition-transform">
+          <div className="p-6 rounded-2xl bg-white border border-gray-100 hover:border-purple-200 transition-colors group shadow-sm hover:shadow-md">
+            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-500 mb-4 group-hover:scale-110 transition-transform">
               <X className="w-6 h-6 fill-current" />
             </div>
             <h4 className="font-bold text-gray-900 mb-2">X-Ready</h4>
@@ -193,8 +193,8 @@ export default function Home() {
 
       {/* Background Ornaments */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 -z-10 w-full max-w-7xl h-full pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-50 rounded-full blur-[120px] opacity-60" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-60" />
+        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-200 rounded-full blur-[120px] opacity-40 mix-blend-multiply" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-fuchsia-200 rounded-full blur-[120px] opacity-40 mix-blend-multiply" />
       </div>
     </div>
   );
